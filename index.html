@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cellular Autamata</title>
+    <style>
+      @font-face {
+        font-family: "Uiua386";
+        src: url("Uiua386.ttf") format("truetype");
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      body {
+        font-family: "Uiua386", sans-serif;
+        color: #c6baac;
+        background-color: #1e1c32;
+        font-size: 18px;
+        text-align: center;
+      }
+      p {
+        line-height: 0;
+      }
+      .stats {
+        position: fixed;
+        top: 0;
+        left: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stats">
+      <p id="rule">≍ 110</p>
+      <p id="speed">⍖ 50</p>
+    </div>
+    <div id="ca"></div>
+  </body>
+  <script>
+    const empty = " ";
+    const gap = "⋅";
+    const rows = "≡";
+
+    const deadChar = gap;
+    const aliveChar = rows;
+    let currentRule = 110;
+    let speed = 50;
+
+    const width = 110;
+    const height = 45;
+
+    let currentGeneration = createRandomGeneration();
+
+    let intervalId;
+
+    startSimulation()
+
+    function startSimulation() {
+      if (intervalId) clearInterval(intervalId); // Clear previous interval
+
+      intervalId = setInterval(() => {
+        const nextGeneration = calculateNextGeneration(
+          currentGeneration,
+          currentRule
+        );
+        renderGeneration(nextGeneration);
+        currentGeneration = nextGeneration;
+      }, speed);
+    }
+
+    function createRandomGeneration() {
+      let e = [];
+      for (let i = 0; i < width; i++) {
+        e.push(Math.round(Math.random()));
+      }
+      return e;
+    }
+
+    function renderGeneration(generation) {
+      const caContainer = document.getElementById("ca");
+      const p = document.createElement("p");
+      p.textContent = generation
+        .map((c) => (c ? aliveChar : deadChar))
+        .join("");
+      caContainer.appendChild(p);
+      while (caContainer.children.length > height) {
+        caContainer.removeChild(caContainer.children[0]);
+      }
+    }
+
+    function calculateNextGeneration(currentGeneration, rule) {
+      const ruleString = getRuleString(rule);
+      const nextGeneration = [];
+      const length = currentGeneration.length;
+
+      for (let i = 0; i < length; i++) {
+        const left = currentGeneration[(i - 1 + length) % length]; // Wrap around left
+        const center = currentGeneration[i];
+        const right = currentGeneration[(i + 1) % length]; // Wrap around right
+
+        const index = parseInt(`${left}${center}${right}`, 2); // Convert "101" (binary) to 5 (decimal)
+
+        nextGeneration[i] = Number(ruleString[7 - index]); // Reverse lookup (index 0 is "111")
+      }
+
+      return nextGeneration;
+    }
+
+    function getRuleString(ruleNumber) {
+      return ruleNumber.toString(2).padStart(8, "0"); // Convert to 8-bit binary
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "j") {
+        currentRule = Math.min(255, currentRule + 1);
+      } else if (event.key === "k") {
+        currentRule = Math.max(0, currentRule - 1);
+      } else if (event.key === "u") {
+        speed = speed + 10;
+        startSimulation(); 
+      } else if (event.key === "i") {
+        speed = Math.max(10, speed -10);
+        startSimulation(); 
+      }
+      document.getElementById("rule").textContent = `≍ ${currentRule}`;
+      document.getElementById("speed").textContent = `⍖ ${speed}`;
+    });
+
+  </script>
+</html>
