@@ -1,1 +1,1 @@
-# ca-sound
+# elementary cellular automata playground
