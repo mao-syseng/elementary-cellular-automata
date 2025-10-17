@@ -5,34 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cellular Autamata</title>
     <style>
-      @font-face {
-        font-family: "Uiua386";
-        src: url("Uiua386.ttf") format("truetype");
-        font-weight: normal;
-        font-style: normal;
+           * {
+        font-family: monospace;
+        font-size: large;
+        color: #222323;
+        background: #f0f6f0;
       }
-
+      @media (prefers-color-scheme: dark) {
+        * {
+          color: #f0f6f0;
+          background: #222323;
+        }
+      }
       body {
-        /* font-family: "Uiua386", sans-serif;*/
-        /* font-size: 18px; */
-        font-family: "Bytesized", sans-serif;
-        font-weight: 400;
-        font-style: normal;
-        font-size: 20px;
-        color: #00faac;
-        background-color: #302387;
         text-align: center;
-      }
-      .stats p:nth-child(3n + 1) {
-        color: #fffdaf;
-      }
-
-      .stats p:nth-child(3n + 2) {
-        color: #00faac;
-      }
-
-      .stats p:nth-child(3n + 3) {
-        color: #ff3796;
       }
       p {
         line-height: 0;
@@ -44,12 +30,6 @@
         left: 0;
       }
     </style>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bytesized&family=Doto:wght@100..900&display=swap"
-      rel="stylesheet"
-    />
   </head>
   <body>
     <div class="stats">
@@ -72,9 +52,6 @@
   </body>
   <script>
     const empty = " ";
-    // const gap = "⋅";
-    // const rows = "≡";
-
     const gap = ".";
     const rows = "O";
 
@@ -136,7 +113,6 @@
         const right = currentGeneration[(i + 1) % length]; // Wrap around right
 
         const index = parseInt(`${left}${center}${right}`, 2); // Convert "101" (binary) to 5 (decimal)
-
         nextGeneration[i] = Number(ruleString[7 - index]); // Reverse lookup (index 0 is "111")
       }
 
